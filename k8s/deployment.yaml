@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: safecat-ai
+  labels:
+    app: safecat-ai
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: safecat-ai
+  template:
+    metadata:
+      labels:
+        app: safecat-ai
+    spec:
+      containers:
+      - name: safecat-ai
+        image: codebyjuliamendes/safecat-ai:latest
+        ports:
+        - containerPort: 8502
+        resources:
+          limits:
+            cpu: "1"
+            memory: 1Gi
+          requests:
+            cpu: 500m
+            memory: 512Mi
+        readinessProbe:
+          httpGet:
+            path: /_stcore/health
+            port: 8502
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /_stcore/health
+            port: 8502
+          initialDelaySeconds: 15
+          periodSeconds: 20

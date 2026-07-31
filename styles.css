@@ -1,0 +1,102 @@
+/* styles.css for IA-para-CAT-Engenharia - Hackathon Cyan & Slate Neon Theme */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+html, body, [class*="css"] {
+    font-family: 'Outfit', sans-serif;
+}
+
+/* Background gradient */
+.main {
+    background: radial-gradient(circle at 10% 20%, rgba(15, 23, 42, 1) 0%, rgba(9, 15, 29, 1) 90%);
+    color: #f8fafc;
+}
+
+/* Sidebar styling */
+section[data-testid="stSidebar"] {
+    background-color: #0b0f19 !important;
+    border-right: 1px solid #1e293b;
+}
+
+/* Custom glowing headers */
+h1 {
+    font-weight: 800 !important;
+    letter-spacing: -0.03em !important;
+    background: linear-gradient(135deg, #38bdf8 0%, #06b6d4 50%, #0d9488 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 40px rgba(6, 182, 212, 0.15);
+}
+
+/* Metric card containers */
+div[data-testid="metric-container"] {
+    background: rgba(30, 41, 59, 0.4) !important;
+    border: 1px solid rgba(6, 182, 212, 0.15) !important;
+    border-radius: 16px !important;
+    padding: 1.25rem !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    transition: all 0.3s ease;
+}
+
+div[data-testid="metric-container"]:hover {
+    transform: translateY(-3px);
+    border-color: rgba(6, 182, 212, 0.4) !important;
+    box-shadow: 0 8px 32px 0 rgba(6, 182, 212, 0.1) !important;
+}
+
+div[data-testid="stMetricValue"] {
+    color: #06b6d4 !important;
+    font-weight: 800 !important;
+}
+
+div[data-testid="stMetricLabel"] {
+    color: #94a3b8 !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.05em;
+}
+
+/* Form panel styling */
+form[data-testid="stForm"] {
+    background: rgba(15, 23, 42, 0.75) !important;
+    border: 1px solid #1e293b !important;
+    border-radius: 20px !important;
+    padding: 2rem !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Custom buttons */
+div.stButton > button:first-child {
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    padding: 0.6rem 2rem !important;
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.02em;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3) !important;
+}
+
+div.stButton > button:first-child:hover {
+    background: linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%) !important;
+    box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5) !important;
+    transform: scale(1.03);
+}
+
+/* Interactive human body layout style */
+.injury-map-container {
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid #1e293b;
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+/* Alert styles */
+div[data-testid="element-container"] .stAlert {
+    border-radius: 14px !important;
+    background-color: rgba(15, 23, 42, 0.8) !important;
+    border: 1px solid rgba(6, 182, 212, 0.2) !important;
+}
