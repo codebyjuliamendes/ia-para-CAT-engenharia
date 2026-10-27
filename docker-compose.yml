@@ -12,7 +12,6 @@ services:
     read_only: true
     tmpfs:
       - /tmp
-      - /home/app
     security_opt:
       - no-new-privileges:true
     restart: unless-stopped

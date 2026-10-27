@@ -54,7 +54,7 @@ jobs:
           cache-to: type=gha,mode=max
       - name: Smoke test (health + migrações + raiz read-only)
         run: |
-          docker run -d --name safecat -p 8502:8502 --read-only --tmpfs /tmp --tmpfs /home/app \
+          docker run -d --name safecat -p 8502:8502 --read-only --tmpfs /tmp \
             -v safecat-data:/data safecat-ai:ci
           for i in $(seq 1 40); do
             if curl -fsS http://127.0.0.1:8502/_stcore/health; then echo; break; fi
