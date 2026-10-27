@@ -1,0 +1,87 @@
+[project]
+name = "safecat"
+version = "1.0.0"
+description = "SafeCAT AI: apoio ao SESMT no registro de acidentes de trabalho (CAT / eSocial S-2210), investigação de causa raiz e indicadores HSE."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [{ name = "Júlia Mendes" }]
+dependencies = [
+    "alembic>=1.20.1",
+    "anthropic>=2.3.0",
+    "pandas>=3.1.0",
+    "plotly>=7.1.0",
+    "pydantic>=2.14.1",
+    "pydantic-settings>=2.16.1",
+    "pypdf>=6.21.3",
+    "reportlab>=5.1.0",
+    "sqlalchemy>=2.1.6",
+    "streamlit>=1.66.1",
+]
+
+[project.scripts]
+safecat = "safecat.cli:main"
+
+[project.optional-dependencies]
+postgres = [
+    "psycopg[binary]>=3.3.6",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/safecat"]
+
+[dependency-groups]
+dev = [
+    "mypy>=2.4.0",
+    "pandas-stubs>=3.0.5.260914",
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.17.3",
+    "types-reportlab>=5.0.0.20261008",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "S", "N", "C4", "PT", "RET", "PL"]
+ignore = [
+    "PLC0415",  # imports tardios intencionais (dependências opcionais/pesadas)
+    "PLR0911", "PLR0912", "PLR0913", "PLR0915", "PLR2004",
+    "RUF001", "RUF002", "RUF003",  # acentuação e travessões em pt-BR são intencionais
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "PLC0415", "S105", "S106"]
+"src/safecat/store/migrations/**" = ["N999"]
+
+[tool.mypy]
+strict = true
+python_version = "3.12"
+packages = ["safecat"]
+mypy_path = "src"
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["plotly.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers --cov=safecat --cov-report=term-missing"
+filterwarnings = ["ignore::DeprecationWarning:reportlab.*"]
+
+[tool.coverage.run]
+branch = true
+source = ["safecat"]
+
+[tool.coverage.report]
+fail_under = 85
+show_missing = true
+skip_covered = true

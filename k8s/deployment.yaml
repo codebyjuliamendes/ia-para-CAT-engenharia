@@ -1,40 +1,85 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: safecat-ai
+  name: safecat
   labels:
-    app: safecat-ai
+    app.kubernetes.io/name: safecat
 spec:
-  replicas: 2
+  # SQLite em volume RWO: uma única réplica e troca com Recreate.
+  # Para escalar horizontalmente, use PostgreSQL (SAFECAT_DATABASE_URL) e sessão afinada no Ingress.
+  replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
-      app: safecat-ai
+      app.kubernetes.io/name: safecat
   template:
     metadata:
       labels:
-        app: safecat-ai
+        app.kubernetes.io/name: safecat
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
       containers:
-      - name: safecat-ai
-        image: codebyjuliamendes/safecat-ai:latest
-        ports:
-        - containerPort: 8502
-        resources:
-          limits:
-            cpu: "1"
-            memory: 1Gi
-          requests:
-            cpu: 500m
-            memory: 512Mi
-        readinessProbe:
-          httpGet:
-            path: /_stcore/health
-            port: 8502
-          initialDelaySeconds: 5
-          periodSeconds: 10
-        livenessProbe:
-          httpGet:
-            path: /_stcore/health
-            port: 8502
-          initialDelaySeconds: 15
-          periodSeconds: 20
+        - name: safecat
+          image: ghcr.io/codebyjuliamendes/safecat-ai:latest  # fixe uma tag/digest em produção
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8502
+          envFrom:
+            - configMapRef:
+                name: safecat-config
+            - secretRef:
+                name: safecat-secrets
+                optional: true  # sem o Secret o app roda em modo demonstração
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: 250m
+              memory: 384Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          startupProbe:
+            httpGet:
+              path: /_stcore/health
+              port: http
+            periodSeconds: 5
+            failureThreshold: 24
+          readinessProbe:
+            httpGet:
+              path: /_stcore/health
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /_stcore/health
+              port: http
+            periodSeconds: 20
+            failureThreshold: 3
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: tmp
+              mountPath: /tmp
+            - name: home
+              mountPath: /home/app
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: safecat-data
+        - name: tmp
+          emptyDir: {}
+        - name: home
+          emptyDir: {}

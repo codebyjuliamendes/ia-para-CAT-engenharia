@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: safecat-config
+  labels:
+    app.kubernetes.io/name: safecat
+data:
+  SAFECAT_DATABASE_URL: "sqlite:////data/safecat.db"
+  SAFECAT_TABLES_DIR: "/data/tabelas"
+  SAFECAT_LLM_MODEL: "claude-opus-5-5"
+  SAFECAT_LOG_LEVEL: "INFO"
+  SAFECAT_RETENTION_DAYS: "0"
+  # SAFECAT_EMPREGADOR_RAZAO_SOCIAL: ""
+  # SAFECAT_EMPREGADOR_CNPJ: ""
