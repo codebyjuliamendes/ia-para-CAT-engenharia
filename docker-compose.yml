@@ -1,13 +1,21 @@
-version: '3.8'
-
 services:
-  safe-cat-ai:
+  safecat:
     build: .
+    image: safecat-ai:local
     ports:
       - "8502:8502"
-    environment:
-      - STREAMLIT_SERVER_PORT=8502
-      - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+    env_file:
+      - path: .env
+        required: false
     volumes:
-      - .:/app
+      - safecat-data:/data
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /home/app
+    security_opt:
+      - no-new-privileges:true
     restart: unless-stopped
+
+volumes:
+  safecat-data:
