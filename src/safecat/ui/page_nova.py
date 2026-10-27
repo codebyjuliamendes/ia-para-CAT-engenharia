@@ -391,7 +391,14 @@ def render(cfg: Settings) -> None:
         revisada = c1.checkbox("Revisei a análise sugerida", key="f_revisada")
         revisor = c2.text_input("Responsável pela revisão", key="f_revisor", max_chars=100)
 
-    if st.button("Validar e salvar CAT", type="primary", key="btn_salvar"):
+    ja_salvo = st.session_state.get("ultimo_salvo") is not None
+    if st.button(
+        "Validar e salvar CAT",
+        type="primary",
+        key="btn_salvar",
+        disabled=ja_salvo,
+        help="Já salvo. Use 'Iniciar novo registro' para cadastrar outra CAT." if ja_salvo else None,
+    ):
         try:
             cat = montar_cat(dados)
         except ValidationError as exc:
@@ -402,6 +409,7 @@ def render(cfg: Settings) -> None:
             novo_id = repo.add(cat, analise, analise_revisada=revisada, revisor=revisor.strip() or None)
             st.session_state["ultimo_salvo"] = novo_id
             st.session_state.pop("analise", None)
+            st.rerun()  # re-renderiza com o botão de salvar desabilitado (evita duplicidade)
 
     ultimo = st.session_state.get("ultimo_salvo")
     if ultimo is not None and st.button("Iniciar novo registro (limpar formulário)", key="btn_limpar"):

@@ -80,6 +80,7 @@ def test_fluxo_completo_registrar_analisar_salvar_historico(at: AppTest, db_url:
     assert not at.exception
     assert any("salva no histórico" in str(s.value) for s in at.success)
     assert at.get("download_button")
+    assert at.button(key="btn_salvar").disabled  # sem salvamento duplicado
 
     repo = CatRepository(make_engine(db_url))
     (resumo,) = repo.list_resumos()
