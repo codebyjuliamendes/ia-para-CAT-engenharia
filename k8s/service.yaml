@@ -1,12 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: safecat-ai-service
+  name: safecat
+  labels:
+    app.kubernetes.io/name: safecat
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
-    app: safecat-ai
+    app.kubernetes.io/name: safecat
   ports:
-    - port: 8502
-      targetPort: 8502
-      nodePort: 30852
+    - name: http
+      port: 80
+      targetPort: http
