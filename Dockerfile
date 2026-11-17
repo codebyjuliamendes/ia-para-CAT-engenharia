@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # ---------- build: resolve dependências com uv a partir do lockfile ----------
-FROM python:3.12-slim AS builder
+FROM python:3.15-slim AS builder
 COPY --from=ghcr.io/astral-sh/uv:0.11.32 /uv /uvx /bin/
 ENV UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
@@ -16,7 +16,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-dev --extra postgres --no-editable
 
 # ---------- runtime: imagem enxuta, usuário sem privilégios ----------
-FROM python:3.12-slim AS runtime
+FROM python:3.15-slim AS runtime
 ARG APP_UID=10001
 RUN groupadd --system --gid ${APP_UID} app \
     && useradd --system --uid ${APP_UID} --gid app --home-dir /home/app --create-home app \
